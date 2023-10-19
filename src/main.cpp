@@ -36,7 +36,6 @@ void initialize() {
 	driveRightFront.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 
 	shooter.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-	wall.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	pros::lcd::set_text(1, "4253S Bot Started! :D");
 	pros::delay(2000);
@@ -94,7 +93,46 @@ void moveIntake(int delay) {
 	pros::delay(250);
 }
 
-void autonomous() {}
+bool enableDrivePID = true;
+
+int drivePID(int setpoint) {
+
+	while(enableDrivePID) {
+		// constants
+		// tune in PDI order
+		double kP = 0;
+		double kI = 0;
+		double kD = 0;
+
+		// Proportional (small current errors)
+		double error = setpoint - avgDriveEncodervalue();
+		//pros::lcd::set_text(1, "avg Encode:" + avgDriveEncodervalue());
+		// Integral (past errors)
+		// kI << kP
+		double integral = integral + error;
+		if ((error == 0) || (error > setpoint))
+			integral = 0;
+		
+		if (error > 50)
+			integral = 0;
+		
+		// Deritative (future errors, rate of change)
+		// direction opposite to current direction of travel
+		double prevError = error;
+		double derivative = error - prevError;
+		
+		double power = error*kP + integral*kI + derivative*kD;
+
+		pros::delay(15); // dT
+		return (int)(power);
+	}
+
+	return 0;
+}
+
+void autonomous() {
+	//pros::Task test(drivePID(457));
+}
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -137,12 +175,10 @@ void opcontrol() {
 	setDriveMotors();
 	// control intake
 	setIntakeMotors();
-	// control wall
-	setWallMotors();
 	// control rollers
 	setShooterMotors();
 
-	// control pneumatics
+	// control wall
 	setPnu();
 
 	pros::delay(10);

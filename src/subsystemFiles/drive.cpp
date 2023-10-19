@@ -9,28 +9,28 @@
 // HELPER FUNCTION
 void setDrive(int left, int right) {
     driveLeftBack = left;
-    driveLeftMid = left;
+    driveLeftBot = left;
     driveLeftFront = left;
     driveRightBack = right;
-    driveRightMid = right;
+    driveRightBot = right;
     driveRightFront = right;
 }
 
 void resetDriveEncoders() {
     driveLeftBack.tare_position();
-    driveLeftMid.tare_position();
+    driveLeftBot.tare_position();
     driveLeftFront.tare_position();
     driveRightBack.tare_position();
-    driveRightMid.tare_position();
+    driveRightBot.tare_position();
     driveRightFront.tare_position();
 }
 
 double avgDriveEncodervalue() {
     return (fabs(driveLeftFront.get_position()) +
-        fabs(driveLeftMid.get_position()) +
+        fabs(driveLeftBot.get_position()) +
         fabs(driveLeftBack.get_position()) +
         fabs(driveRightFront.get_position()) + 
-        fabs(driveRightMid.get_position()) + 
+        fabs(driveRightBot.get_position()) + 
         fabs(driveRightBack.get_position())) / 6;
 }
 

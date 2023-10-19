@@ -76,7 +76,6 @@ void opcontrol(void);
 #include "subsystemHeaders/drive.h"
 #include "subsystemHeaders/globals.h"
 #include "subsystemHeaders/intake.h"
-#include "subsystemHeaders/wall.h"
 #include "subsystemHeaders/shooter.h"
 
 //#include <iostream>
