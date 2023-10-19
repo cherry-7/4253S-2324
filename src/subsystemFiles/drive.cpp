@@ -3,35 +3,37 @@
 #include "pros/imu.h"
 #include "pros/imu.hpp"
 #include "pros/rtos.hpp"
+#include "subsystemHeaders/globals.h"
+#include <string>
 
 //pros::ADIGyro gyro('B', 0.91); // 0.91 change later
 
 // HELPER FUNCTION
 void setDrive(int left, int right) {
-    driveLeftBack = left;
     driveLeftBot = left;
     driveLeftFront = left;
-    driveRightBack = right;
+    driveLeftBack = left;
     driveRightBot = right;
+    driveRightBack = right;
     driveRightFront = right;
 }
 
 void resetDriveEncoders() {
-    driveLeftBack.tare_position();
     driveLeftBot.tare_position();
     driveLeftFront.tare_position();
-    driveRightBack.tare_position();
+    driveLeftBack.tare_position();
     driveRightBot.tare_position();
     driveRightFront.tare_position();
+    driveRightBack.tare_position();
 }
 
 double avgDriveEncodervalue() {
-    return (fabs(driveLeftFront.get_position()) +
+    return (fabs(driveLeftBack.get_position()) +
+        fabs(driveLeftFront.get_position()) +
         fabs(driveLeftBot.get_position()) +
-        fabs(driveLeftBack.get_position()) +
+        fabs(driveRightBack.get_position()) + 
         fabs(driveRightFront.get_position()) + 
-        fabs(driveRightBot.get_position()) + 
-        fabs(driveRightBack.get_position())) / 6;
+        fabs(driveRightBot.get_position())) / 6;
 }
 
 void resetGyro() {
@@ -56,7 +58,7 @@ void setDriveMotors() {
         rightJoystick = 0;
 
     setDrive(leftJoystick, rightJoystick);
-
+    pros::lcd::set_text(3, "Left: " + std::to_string(leftJoystick) + "Right: " + std::to_string(rightJoystick));
     
 }
 

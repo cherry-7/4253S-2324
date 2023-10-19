@@ -151,13 +151,13 @@ void autonomous() {
 void setPnu() {
 	
 	if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_X)) {
-		pros::lcd::set_text(2, "PNU activated");
+		pros::lcd::set_text(1, "PNU activated");
 		pnu.set_value(true);
 		//pros::delay(10);
 		//pnu.set_value(false);
 	}
 	if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
-		pros::lcd::set_text(3, "PNU deactivated");
+		pros::lcd::set_text(2, "PNU deactivated");
 		pnu.set_value(false);
 		//pros::delay(10);
 		//pnu.set_value(false);
@@ -168,18 +168,25 @@ void setPnu() {
 }
 
 void opcontrol() {
-	pros::lcd::set_text(2, "Op Control Started");
-	//std::cout << "HELLO" << std::endl;
+	bool state = true;
+	while(true) {
+		pros::lcd::set_text(0, "Op Control Started");
+		//std::cout << "HELLO" << std::endl;
 
-	// some code to control drive
-	setDriveMotors();
-	// control intake
-	setIntakeMotors();
-	// control rollers
-	setShooterMotors();
+		// some code to control drive
+		setDriveMotors();
+		pros::lcd::set_text(1, "Drive Motors Set");
+		//setDrive(0, 127);
+		// control intake
+		setIntakeMotors();
+		pros::lcd::set_text(1, "Intake Motors Set");
+		// control rollers
+		setShooterMotors();
+		pros::lcd::set_text(1, "Shooter Motors Set");
 
-	// control wall
-	setPnu();
+		// control wall
+		setPnu();
 
-	pros::delay(10);
+		pros::delay(10);
+	}
 }
