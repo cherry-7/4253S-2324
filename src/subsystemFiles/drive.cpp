@@ -57,13 +57,52 @@ void setDriveMotors() {
     if(abs(rightJoystick) < 10) 
         rightJoystick = 0;
 
-    setDrive(leftJoystick, rightJoystick);
+    setDrive(leftJoystick * 0.75, rightJoystick * 0.75);
     pros::lcd::set_text(3, "Left: " + std::to_string(leftJoystick) + "Right: " + std::to_string(rightJoystick));
     
 }
 
+bool enableDrivePID = true;
+
+double kP = 0;
+double kI = 0;
+double kD = 0;
+
 // AUTONOMOUS FUNCTIONS
-void translate(int units, int voltage) {
+int drivePID(int setpoint) {
+
+	while(enableDrivePID) {
+		// constants
+		// tune in PDI order
+		
+
+		// Proportional (small current errors)
+		double error = setpoint - avgDriveEncodervalue();
+		//pros::lcd::set_text(1, "avg Encode:" + avgDriveEncodervalue());
+		// Integral (past errors)
+		// kI << kP
+		double integral = integral + error;
+		if ((error == 0) || (error > setpoint))
+			integral = 0;
+		
+		if (error > 50)
+			integral = 0;
+		
+		// Deritative (future errors, rate of change)
+		// direction opposite to current direction of travel
+		double prevError = error;
+		double derivative = error - prevError;
+		
+		double power = error*kP + integral*kI + derivative*kD;
+
+		pros::delay(15); // dT
+		return (int)(power);
+	}
+
+	return 0;
+}
+
+void translate(int units) {
     // define a direction based on units provided
     int direction = abs(units) / units; // either 1 or -1
 
@@ -72,7 +111,7 @@ void translate(int units, int voltage) {
     // drive forward until untits are reached
     // fabs covers doubles
     while(avgDriveEncodervalue() < abs(units)) {
-        setDrive(voltage * direction, voltage * direction);
+        setDrive(drivePID(units) * direction, drivePID(units) * direction);
         pros::delay(10);
     }
     

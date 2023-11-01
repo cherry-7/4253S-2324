@@ -16,5 +16,6 @@ extern pros::Motor driveRightFront;
 
 extern pros::Imu imu_sensor;
 extern pros::ADIDigitalOut pnu;
+extern pros::ADIDigitalOut pnu2;
 
 extern pros::Controller controller;

@@ -26,7 +26,8 @@ void on_center_button() {
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-	pnu.set_value(false);
+	pnu.set_value(true);
+	pnu2.set_value(false);
 	pros::lcd::initialize();
 	pros::lcd::set_text(0, "Bot Initializing");
 
@@ -93,45 +94,11 @@ void moveIntake(int delay) {
 	pros::delay(250);
 }
 
-bool enableDrivePID = true;
 
-int drivePID(int setpoint) {
 
-	while(enableDrivePID) {
-		// constants
-		// tune in PDI order
-		double kP = 0;
-		double kI = 0;
-		double kD = 0;
-
-		// Proportional (small current errors)
-		double error = setpoint - avgDriveEncodervalue();
-		//pros::lcd::set_text(1, "avg Encode:" + avgDriveEncodervalue());
-		// Integral (past errors)
-		// kI << kP
-		double integral = integral + error;
-		if ((error == 0) || (error > setpoint))
-			integral = 0;
-		
-		if (error > 50)
-			integral = 0;
-		
-		// Deritative (future errors, rate of change)
-		// direction opposite to current direction of travel
-		double prevError = error;
-		double derivative = error - prevError;
-		
-		double power = error*kP + integral*kI + derivative*kD;
-
-		pros::delay(15); // dT
-		return (int)(power);
-	}
-
-	return 0;
-}
 
 void autonomous() {
-	//pros::Task test(drivePID(457));
+	//translate(100, drivePID(100));
 }
 
 /**
@@ -152,13 +119,15 @@ void setPnu() {
 	
 	if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_X)) {
 		pros::lcd::set_text(1, "PNU activated");
-		pnu.set_value(true);
+		pnu.set_value(false);
+		pnu2.set_value(true);
 		//pros::delay(10);
 		//pnu.set_value(false);
 	}
 	if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
 		pros::lcd::set_text(2, "PNU deactivated");
-		pnu.set_value(false);
+		pnu.set_value(true);
+		pnu2.set_value(false);
 		//pros::delay(10);
 		//pnu.set_value(false);
 	}
@@ -177,6 +146,7 @@ void opcontrol() {
 		setDriveMotors();
 		pros::lcd::set_text(1, "Drive Motors Set");
 		//setDrive(0, 127);
+
 		// control intake
 		setIntakeMotors();
 		pros::lcd::set_text(1, "Intake Motors Set");
