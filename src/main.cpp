@@ -2,8 +2,10 @@
 #include "pros/adi.hpp"
 #include "pros/misc.h"
 #include "pros/rtos.hpp"
+#include "Graphy/Grapher.hpp"
+#include <string>
 
-/**
+/**	
  * A callback function for LLEMU's center button.
  *
  * When this callback is fired, it will toggle line 2 of the LCD text between
@@ -87,18 +89,73 @@ void moveIndexer(int loops, int delay) {
 	}
 }
 
-void moveIntake(int delay) {
-	setIntake(127);
+void moveIntake(int delay, int direction) {
+	setIntake(direction * 127);
 	pros::delay(delay);
-	setIntake(-127);
+	setIntake(0);
 	pros::delay(250);
 }
 
+void blueonBlueGoal() {
+	// turn & score matchload
+	rotate(45, -1);
+	translate(600, 1);
+	moveIntake(800, -1);
+	translate(600, -1);
 
+	pros::delay(250);
+	// grab netural triball
+	rotate(135, 1);
+	translate(600, 1);
+	moveIntake(1000, 1);
+	pros::delay(250);
+	// move back & score
+	translate(600, -1);
+	rotate(135, -1);
+	translate(600, 1);
+	moveIntake(800, -1);
+	translate(300, -1);
+
+	// intake middle triball
+	rotate(90, 1);
+	translate(900, 1);
+	moveIntake(800, 1);
+	rotate(45, -1);
+	translate(600, 1);
+	rotate(45, 1);
+
+	pnu.set_value(false);
+	pnu2.set_value(true);
+
+	//translate(-1500);
+
+}
+
+void blueonRedGoal() {
+	
+}
+
+void redonBlueGoal() {
+	
+} 
+
+void redonRedGoal() {
+	
+}
 
 
 void autonomous() {
-	//translate(100, drivePID(100));
+	//blueonBlueGoal();
+	//resetGyro();
+	
+	//rotate(40, -1);
+	//pros::delay(300);
+	translate(1000, 1);
+	pros::delay(800);
+	rotate(45, 1);
+	pros::delay(900);
+	translate(750, 1);
+	//translate(600, -1);
 }
 
 /**
@@ -138,7 +195,7 @@ void setPnu() {
 
 void opcontrol() {
 	bool state = true;
-	while(true) {
+	while(state) {
 		pros::lcd::set_text(0, "Op Control Started");
 		//std::cout << "HELLO" << std::endl;
 
@@ -156,6 +213,7 @@ void opcontrol() {
 
 		// control wall
 		setPnu();
+		
 
 		pros::delay(10);
 	}

@@ -12,7 +12,7 @@ double avgDriveEncodervalue();
 void setDriveMotors();
 
 //AUTONOMOUS FUNCtIONS
-void translate(int units, int voltage);
+void translate(int units, int direction);
 // voltage can go higher
 // moving a set of points a set of distance from where it was
 
@@ -20,4 +20,4 @@ void translate(int units, int voltage);
 
 void resetGyro();
 
-void turn(int angle, int voltage);
+void rotate(int degrees, int direction);
