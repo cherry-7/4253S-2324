@@ -92,13 +92,10 @@ void arcade_drive(int drive, int rotate) {
 
 }
 
+int toggleDrive = 0;
 // DRIVER CONTROL FUNCTIONS
 void setDriveMotors() {
     // PRESS B
-    if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
-
-    }
-
     int leftJoystick = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
     int rightJoystick = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
     // joysticks can range from -127 to +127
@@ -114,10 +111,20 @@ void setDriveMotors() {
     if(abs(rightJoystick) < 10) 
         rightJoystick = 0;
 
+    if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
+        if(toggleDrive == 0) {
+            toggleDrive = 1;
+            arcDrive = false;
+        } else if(toggleDrive == 1) {
+            toggleDrive = 0;
+            arcDrive = true;
+        }
+    }
+    
     if(arcDrive == true) 
-        arcade_drive(rightJoystick, leftJoystick);
+        arcade_drive(rightJoystick, leftJoystick * 0.75);
     else 
-        setDrive(leftJoystick * rightJoystick, leftJoystick * rightJoystick);
+        setDrive(leftJoystick, rightJoystick);
     pros::lcd::set_text(3, "Left: " + std::to_string(leftJoystick) + "Right: " + std::to_string(rightJoystick));
     
 }
