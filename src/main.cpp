@@ -202,19 +202,19 @@ void opcontrol() {
 		
 
 		// some code to control drive
-		setDriveMotors();
+		//setDriveMotors();
 		pros::lcd::set_text(1, "Drive Motors Set");
 		//setDrive(0, 127);
 		
 		// control intake
-		setIntakeMotors();
+		//setIntakeMotors();
 		pros::lcd::set_text(1, "Intake Motors Set");
 		// control rollers
-		setShooterMotors();
+		//setShooterMotors();
 		pros::lcd::set_text(1, "Shooter Motors Set");
 
 		// control wall
-		setPnu();
+		//setPnu();
 		
 
 		pros::delay(10);

@@ -198,9 +198,9 @@ void translate(int units, int direction) {
 
 bool enableRotatePID = true;
 
-double rotatekP = 8000;
-double rotatekI = 400;
-double rotatekD = 800000;
+double rotatekP = 1;
+double rotatekI = 0;
+double rotatekD = 0;
 
 int rotatePID(double setpoint) {
 
@@ -240,7 +240,7 @@ void rotate(double degrees, int direction) {
     // degrees = degrees*2;
     // reset motor encoders
      resetGyro();
-    while(fabs(pros::c::imu_get_heading(9)) < fabs(degrees)) {
+    while(fabs(imu_sensor.get_heading()) < fabs(degrees)) {
         pros::lcd::set_text(1, std::to_string(fabs(pros::c::imu_get_heading(9))));
         setDrive(-rotatePID(degrees) * direction, rotatePID(degrees) * direction);
         pros::delay(10);
