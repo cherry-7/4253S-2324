@@ -2,7 +2,9 @@
 #include "pros/adi.hpp"
 #include "pros/imu.h"
 #include "pros/imu.hpp"
+#include "pros/llemu.hpp"
 #include "pros/misc.h"
+#include "pros/motors.hpp"
 #include "pros/rtos.hpp"
 #include "subsystemHeaders/globals.h"
 #include <algorithm>
@@ -196,11 +198,11 @@ void translate(int units, int direction) {
 
 bool enableRotatePID = true;
 
-double rotatekP = 1.21;
-double rotatekI = 0.2045;
-double rotatekD = 0.928;
+double rotatekP = 8000;
+double rotatekI = 400;
+double rotatekD = 800000;
 
-int rotatePID(int setpoint) {
+int rotatePID(double setpoint) {
 
 	while(enableRotatePID) {
 		// constants
@@ -233,14 +235,33 @@ int rotatePID(int setpoint) {
 	return 0;
 }
 
-void rotate(int degrees, int direction) {
+void rotate(double degrees, int direction) {
 
+    // degrees = degrees*2;
     // reset motor encoders
     resetGyro();
-
-    while(fabs(pros::c::imu_get_heading(9)) < abs(degrees)) {
-        setDrive(-rotatePID(degrees) * direction, rotatePID(degrees) * direction);
+    resetGyro();
+    // drive forward until untits are reached
+    // fabs covers doubles
+    setDrive(-127 * direction, 127 * direction);
+    while(fabs(pros::c::imu_get_heading(9)) < fabs(degrees * 10) - 50) {
+        std::cout << pros::c::imu_get_heading(9) << std::endl;
         pros::delay(10);
+    }
+
+    //letting robot lose momentum
+    pros::delay(100);
+    // correcting overshoot/undershoot
+    if(fabs(pros::c::imu_get_heading(9)) > fabs(degrees * 10) ) {
+        setDrive(0.5 * 127 * direction, 0.5 * -127 * direction);
+        while(fabs(pros::c::imu_get_heading(9)) < fabs(degrees * 10)) {
+            pros::delay(10);
+        }
+    } else if (fabs(pros::c::imu_get_heading(9)) < fabs(degrees * 10)) {
+        setDrive(0.5 * -127 * direction, 0.5 *127 * direction);
+        while(fabs(pros::c::imu_get_heading(9)) < fabs(degrees * 10)) {
+            pros::delay(10);
+        }
     }
 
     // turn until units are reached
@@ -283,3 +304,21 @@ void turn (int angle, int voltage) {
     // set drive back to neutral
     setDrive(0, 0);
 }*/
+
+/*
+
+    // degrees = degrees*2;
+    // reset motor encoders
+    resetGyro();
+    while(fabs(pros::c::imu_get_heading(9)) < fabs(degrees)) {
+        pros::lcd::set_text(1, std::to_string(fabs(pros::c::imu_get_heading(9))));
+        setDrive(-rotatePID(degrees) * direction, rotatePID(degrees) * direction);
+        pros::delay(10);
+    }
+
+    // turn until units are reached
+    pros::delay(100);
+
+    // set drive back to neutral
+    setDrive(0, 0);
+    //pros::delay(100);*/

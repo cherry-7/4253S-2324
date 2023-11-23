@@ -97,6 +97,12 @@ void moveIntake(int delay, int direction) {
 }
 
 void blueonBlueGoal() {
+
+	translate(1000, 1);
+	pros::delay(800);
+	rotate(45, 1);
+	pros::delay(900);
+	translate(750, 1);
 	// turn & score matchload
 	rotate(45, -1);
 	translate(600, 1);
@@ -145,17 +151,8 @@ void redonRedGoal() {
 
 
 void autonomous() {
-	//blueonBlueGoal();
-	//resetGyro();
-	
-	//rotate(40, -1);
-	//pros::delay(300);
-	translate(1000, 1);
-	pros::delay(800);
-	rotate(45, 1);
-	pros::delay(900);
-	translate(750, 1);
-	//translate(600, -1);
+	rotate(180.0, 1);
+	//moveIntake(100, 1);
 }
 
 /**
@@ -196,14 +193,17 @@ void setPnu() {
 void opcontrol() {
 	bool state = true;
 	while(state) {
+		
 		pros::lcd::set_text(0, "Op Control Started");
 		//std::cout << "HELLO" << std::endl;
+
+		
 
 		// some code to control drive
 		setDriveMotors();
 		pros::lcd::set_text(1, "Drive Motors Set");
 		//setDrive(0, 127);
-
+		
 		// control intake
 		setIntakeMotors();
 		pros::lcd::set_text(1, "Intake Motors Set");
