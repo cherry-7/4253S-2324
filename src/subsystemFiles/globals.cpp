@@ -19,3 +19,5 @@ pros::ADIDigitalOut pnu2('B');
 
 // CONTROLLER
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
+
+std::shared_ptr<okapi::IterativePosPIDController> turnPID = std::make_shared<okapi::IterativePosPIDController>(0.1, 0.0, 0.0, 0.0, okapi::TimeUtilFactory::withSettledUtilParams(2, 2, okapi::millisecond*100));

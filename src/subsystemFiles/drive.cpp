@@ -253,6 +253,18 @@ void rotate(double degrees, int direction) {
     //pros::delay(100);
 }
 
+void rotate(double degrees) {
+    turnPID->reset();
+    turnPID->setTarget(0);
+
+    do {
+        double power = turnPID->step(degrees - imu_sensor.get_heading());
+        pros::delay(10);
+    } while(!turnPID->isSettled());
+
+    setDrive(0, 0);
+}
+
 // OLD TURN FUNCTION
 /*
 
