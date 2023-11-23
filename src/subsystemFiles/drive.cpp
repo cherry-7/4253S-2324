@@ -239,31 +239,12 @@ void rotate(double degrees, int direction) {
 
     // degrees = degrees*2;
     // reset motor encoders
-    resetGyro();
-    resetGyro();
-    // drive forward until untits are reached
-    // fabs covers doubles
-    setDrive(-127 * direction, 127 * direction);
-    while(fabs(pros::c::imu_get_heading(9)) < fabs(degrees * 10) - 50) {
-        std::cout << pros::c::imu_get_heading(9) << std::endl;
+     resetGyro();
+    while(fabs(pros::c::imu_get_heading(9)) < fabs(degrees)) {
+        pros::lcd::set_text(1, std::to_string(fabs(pros::c::imu_get_heading(9))));
+        setDrive(-rotatePID(degrees) * direction, rotatePID(degrees) * direction);
         pros::delay(10);
     }
-
-    //letting robot lose momentum
-    pros::delay(100);
-    // correcting overshoot/undershoot
-    if(fabs(pros::c::imu_get_heading(9)) > fabs(degrees * 10) ) {
-        setDrive(0.5 * 127 * direction, 0.5 * -127 * direction);
-        while(fabs(pros::c::imu_get_heading(9)) < fabs(degrees * 10)) {
-            pros::delay(10);
-        }
-    } else if (fabs(pros::c::imu_get_heading(9)) < fabs(degrees * 10)) {
-        setDrive(0.5 * -127 * direction, 0.5 *127 * direction);
-        while(fabs(pros::c::imu_get_heading(9)) < fabs(degrees * 10)) {
-            pros::delay(10);
-        }
-    }
-
     // turn until units are reached
     pros::delay(100);
 
