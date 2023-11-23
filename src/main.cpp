@@ -194,6 +194,8 @@ void opcontrol() {
 	bool state = true;
 	while(state) {
 		
+		std::cout << "robot heading: " << imu_sensor.get_heading() << std::endl;
+
 		pros::lcd::set_text(0, "Op Control Started");
 		//std::cout << "HELLO" << std::endl;
 
