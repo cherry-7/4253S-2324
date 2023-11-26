@@ -62,32 +62,8 @@ void disabled() {}
  */
 void competition_initialize() {}
 
-/**
- * Runs the user autonomous code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the autonomous
- * mode. Alternatively, this function may be called in initialize or opcontrol
- * for non-competition testing purposes.
- *
- * If the robot is disabled or communications is lost, the autonomous task
- * will be stopped. Re-enabling the robot will restart the task, not re-start it
- * from where it left off.
- */
-
 // backwards = negative units
 // speed is positive bc no direction
-
-void moveIndexer(int loops, int delay) {
-	int i { loops };
-
-	for(i; i> 0; i--) {
-		shooter.move_absolute(350, 600);
-		pros::delay(250);
-		shooter.move_absolute(-350, 600);
-
-		pros::delay(delay);
-	}
-}
 
 void moveIntake(int delay, int direction) {
 	setIntake(direction * 127);
@@ -96,78 +72,149 @@ void moveIntake(int delay, int direction) {
 	pros::delay(250);
 }
 
-void blueonBlueGoal() {
-
-	translate(1000, 1);
-	pros::delay(800);
-	rotate(45, 1);
-	pros::delay(900);
-	translate(750, 1);
-	// turn & score matchload
-	rotate(45, -1);
-	translate(600, 1);
-	moveIntake(800, -1);
-	translate(600, -1);
-
+void moveShooter(int delay, int direction) {
+	setShooter(direction * 500);
+	pros::delay(delay);
+	setIntake(0);
 	pros::delay(250);
+}
+
+void sameColorGoal() {
+	// release intake
+	moveShooter(150, -1);
+
+	// turn & score matchload
+	rotate(45);
+	translate(1600, 1);
+
+	moveIntake(800, -1);
+	translate(1600, -1);
+	pros::delay(250);
+
 	// grab netural triball
-	rotate(135, 1);
-	translate(600, 1);
+	rotate(-100);
+	pros::delay(250);
+	translate(1800, 1);
 	moveIntake(1000, 1);
 	pros::delay(250);
-	// move back & score
-	translate(600, -1);
-	rotate(135, -1);
-	translate(600, 1);
+
+	// score triball
+	translate(1600, -1); 
+	pros::delay(100);
+	rotate(45);
+	translate(1600, 1);
 	moveIntake(800, -1);
-	translate(300, -1);
+	translate(1700, -1);
 
-	// intake middle triball
-	rotate(90, 1);
-	translate(900, 1);
-	moveIntake(800, 1);
-	rotate(45, -1);
+	rotate(100);
+	translate(1800, -1);
+
+} 
+
+void diffColorGoal() {
+	// release intake
+	moveShooter(150, -1);
+
+	// AWP 
+	pnu.set_value(false);
+	
+	// turn & score matchload
+	translate(200, 1);
+	rotate(45);
+	pros::delay(250);
+	translate(1600, 1);
+	moveIntake(800, -1);
+	pnu.set_value(true);
+	translate(1600, -1); // change to 1200 
+	pros::delay(250);
+
+	// hang 
+	rotate(-50);
+	translate(2400, -1);
+}
+
+void diffColorMid() {
+	moveShooter(150, -1);
+	// AWP 
+	pnu2.set_value(true);
+	// turn & score matchload
+	rotate(45);
+	translate(1600, 1);
+	pnu2.set_value(false);
+	moveIntake(800, -1);
+	translate(1600, -1);
+	pros::delay(250);
+	rotate(50);
+	translate(1800, -1);
+}
+
+void skills() {
+	// shoots matchloads
+	moveShooter(44000, 1);
+
+	// get neutral triball
+	rotate(90);
 	translate(600, 1);
-	rotate(45, 1);
+	rotate(-45);
+	pnu.set_value(false);
+	pnu2.set_value(true);
+	translate(1200, 1);
 
+	// score neutral triball & matchload
+	translate(1200, 1);
+	rotate(-50);
+	translate(1600, 1);
+	pnu.set_value(true);
+	pnu2.set_value(false);
+
+	// score random matchloads 
+	for(int i = 0; i < 2; i++) {
+		translate (1500, -1);
+		rotate(-45);
+		pnu.set_value(false);
+		pnu2.set_value(true);
+		translate(600, 1);
+		rotate(-45);
+		translate(600, 1);
+		rotate(45);
+		translate(600, 1);
+		rotate(90);
+		translate(1600, 1);
+		pnu.set_value(true);
+		pnu2.set_value(false);
+	}
+
+	// last remaining random matchloads
+	rotate(-90);
+	pnu.set_value(false);
+	pnu2.set_value(true);
+	translate(600, 1);
+	rotate(90);
+	translate(1200, 1);
+	rotate(45);
+	translate(900, 1);
+	translate(900, -1);
+	rotate(45);
+	translate(900, 1);
+	translate(900, -1);
+	
+	// close wings
 	pnu.set_value(false);
 	pnu2.set_value(true);
 
-	//translate(-1500);
-
-}
-
-void blueonRedGoal() {
-	
-}
-
-void redonBlueGoal() {
-	
-} 
-
-void redonRedGoal() {
-	
+	// hang
+	rotate(-45);
+	translate(1200, -1);
+	rotate(-45);
+	translate(1200, -1);
 }
 
 
 void autonomous() {
-	rotate(180.0, 1);
-	//moveIntake(100, 1);
+	//sameColorGoal();
+	diffColorGoal();
+	//skills();
 }
-
-/**
- * Runs the operator control code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the operator
- * control mode.
- *
- * If no competition control is connected, this function will run immediately
- * following initialize().
- *
- * If the robot is disabled or communications is lost, the
- * operator control task will be stopped. Re-enabling the robot will restart the
- * task, not resume it from where it left off.
- */
 
 void setPnu() {
 	
@@ -207,14 +254,14 @@ void opcontrol() {
 		//setDrive(0, 127);
 		
 		// control intake
-		//setIntakeMotors();
+		setIntakeMotors();
 		pros::lcd::set_text(1, "Intake Motors Set");
 		// control rollers
-		//setShooterMotors();
+		setShooterMotors();
 		pros::lcd::set_text(1, "Shooter Motors Set");
 
 		// control wall
-		//setPnu();
+		setPnu();
 		
 
 		pros::delay(10);

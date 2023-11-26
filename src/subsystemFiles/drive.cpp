@@ -46,7 +46,7 @@ void resetGyro() {
 
 bool arcDrive = true;
 
-void arcade_drive(int drive, int rotate) {
+void arcadeDrive(int drive, int rotate) {
    int maximum = fmax(abs(drive), abs(rotate));
 
    int total = drive + rotate;
@@ -54,32 +54,14 @@ void arcade_drive(int drive, int rotate) {
 
    if (drive >= 0) {
         if (rotate >= 0) {
-            driveLeftBot = maximum;
-            driveLeftFront = maximum;
-            driveLeftBack = maximum;
-
-            driveRightBot = difference;
-            driveRightBack = difference;
-            driveRightFront = difference;
+            setDrive(maximum, difference);
         }
         else {
-            driveLeftBot = total;
-            driveLeftFront = total;
-            driveLeftBack = total;
-
-            driveRightBot = maximum;
-            driveRightBack = maximum;
-            driveRightFront = maximum;
+            setDrive(total, maximum);
         }
    } else {
         if(rotate >= 0) {
-            driveLeftBot = total;
-            driveLeftFront = total;
-            driveLeftBack = total;
-
-            driveRightBot = -maximum;
-            driveRightBack = -maximum;
-            driveRightFront = -maximum;
+             setDrive(total, -maximum);
         }
         else {
             driveLeftBot = -maximum;
@@ -94,9 +76,10 @@ void arcade_drive(int drive, int rotate) {
 
 }
 
-int toggleDrive = 0;
+
 // DRIVER CONTROL FUNCTIONS
 void setDriveMotors() {
+    static int toggleDrive = 0;
     // PRESS B
     int leftJoystick = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
     int rightJoystick = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
@@ -124,28 +107,26 @@ void setDriveMotors() {
     }
     
     if(arcDrive == true) 
-        arcade_drive(rightJoystick, leftJoystick * 0.75);
+        arcadeDrive(rightJoystick, leftJoystick * 0.75);
     else 
         setDrive(leftJoystick, rightJoystick);
     pros::lcd::set_text(3, "Left: " + std::to_string(leftJoystick) + "Right: " + std::to_string(rightJoystick));
     
 }
 
-bool enableDrivePID = true;
 
-
-
-double drivekP = 0.2345;
-double drivekI = 0.3;
-double drivekD = 0.374;
 
 // AUTONOMOUS FUNCTIONS
 int drivePID(int setpoint) {
+    bool enableDrivePID = true;
+
+    // PID constants
+    double drivekP = 0.2345;
+    double drivekI = 0.3;
+    double drivekD = 0.374;
 
 	while(enableDrivePID) {
-		// constants
-		// tune in PDI order
-		
+		// tune in PDI order		
 
 		// Proportional (small current errors)
 		double error = setpoint - avgDriveEncodervalue();
@@ -174,11 +155,9 @@ int drivePID(int setpoint) {
 }
 
 void translate(int units, int direction) {
-    // define a direction based on units provided
-    //int direction = abs(units) / units; // either 1 or -1
-
     // reset motor encoders
     resetDriveEncoders();
+
     // drive forward until untits are reached
     // fabs covers doubles
     while(avgDriveEncodervalue() < abs(units)) {
@@ -195,6 +174,24 @@ void translate(int units, int direction) {
     //pros::delay(100);
 }
 
+
+void rotate(double degrees) {
+
+    resetGyro();
+    turnPID->reset();
+    turnPID->setTarget(0);
+
+    do {
+        double power = turnPID->step(degrees - imu_sensor.get_yaw());
+        setDrive(-power * 127, power * 127);
+        pros::delay(10);
+    } while(!turnPID->isSettled());
+
+    setDrive(0, 0);
+}
+
+// OLD TURN FUNCTIONS
+/*
 
 bool enableRotatePID = true;
 
@@ -236,10 +233,10 @@ int rotatePID(double setpoint) {
 }
 
 void rotate(double degrees, int direction) {
-
+    
     // degrees = degrees*2;
     // reset motor encoders
-     resetGyro();
+    
     while(fabs(imu_sensor.get_heading()) < fabs(degrees)) {
         pros::lcd::set_text(1, std::to_string(fabs(pros::c::imu_get_heading(9))));
         setDrive(-rotatePID(degrees) * direction, rotatePID(degrees) * direction);
@@ -252,21 +249,6 @@ void rotate(double degrees, int direction) {
     setDrive(0, 0);
     //pros::delay(100);
 }
-
-void rotate(double degrees) {
-    turnPID->reset();
-    turnPID->setTarget(0);
-
-    do {
-        double power = turnPID->step(degrees - imu_sensor.get_heading());
-        pros::delay(10);
-    } while(!turnPID->isSettled());
-
-    setDrive(0, 0);
-}
-
-// OLD TURN FUNCTION
-/*
 
 void turn (int angle, int voltage) {
     int direction = abs(angle) / angle; // either 1 or -1

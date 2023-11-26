@@ -20,4 +20,4 @@ void translate(int units, int direction);
 
 void resetGyro();
 
-void rotate(double degrees, int direction);
+void rotate(double degrees);
