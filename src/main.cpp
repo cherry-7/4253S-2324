@@ -249,7 +249,7 @@ void opcontrol() {
 		
 
 		// some code to control drive
-		//setDriveMotors();
+		setDriveMotors();
 		pros::lcd::set_text(1, "Drive Motors Set");
 		//setDrive(0, 127);
 		
