@@ -14,9 +14,13 @@ extern pros::Motor driveRightBack;
 extern pros::Motor driveRightBot;
 extern pros::Motor driveRightFront;
 
+extern pros::Distance distanceSensor;
 extern pros::Imu imu_sensor;
+
 extern pros::ADIDigitalOut pnu;
 extern pros::ADIDigitalOut pnu2;
+extern pros::ADIAnalogIn linesensor;
+extern pros::ADIDigitalOut endgame;
 
 extern pros::Controller controller;
 

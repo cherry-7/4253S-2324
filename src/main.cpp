@@ -51,7 +51,7 @@ void initialize() {
  */
 void disabled() {}
 
-/**
+/**q1qq	`a1qa							a	
  * Runs after initialize(), and before autonomous when connected to the Field
  * Management System or the VEX Competition Switch. This is intended for
  * competition-specific initialization routines, such as an autonomous selector
@@ -75,7 +75,7 @@ void moveIntake(int delay, int direction) {
 void moveShooter(int delay, int direction) {
 	setShooter(direction * 500);
 	pros::delay(delay);
-	setIntake(0);
+	setShooter(0);
 	pros::delay(250);
 }
 
@@ -84,31 +84,21 @@ void sameColorGoal() {
 	moveShooter(150, -1);
 
 	// turn & score matchload
-	rotate(45);
-	translate(1600, 1);
+	translate(600, 1);
+	rotate(-50);
 
-	moveIntake(800, -1);
-	translate(1600, -1);
-	pros::delay(250);
-
-	// grab netural triball
-	rotate(-100);
-	pros::delay(250);
-	translate(1800, 1);
-	moveIntake(1000, 1);
-	pros::delay(250);
-
-	// score triball
-	translate(1600, -1); 
+	//moveIntake(1000, -1);
+	translate(1200, 1);
 	pros::delay(100);
-	rotate(45);
-	translate(1600, 1);
-	moveIntake(800, -1);
+
+	/* HANG
+		translate(800, -1);
+	pros::delay(100);
+	rotate(25);
+	translate(1500, -1);
+	rotate(40);
 	translate(1700, -1);
-
-	rotate(100);
-	translate(1800, -1);
-
+	*/
 } 
 
 void diffColorGoal() {
@@ -117,20 +107,22 @@ void diffColorGoal() {
 
 	// AWP 
 	pnu.set_value(false);
-	
-	// turn & score matchload
-	translate(200, 1);
-	rotate(45);
-	pros::delay(250);
-	translate(1600, 1);
-	moveIntake(800, -1);
-	pnu.set_value(true);
-	translate(1600, -1); // change to 1200 
-	pros::delay(250);
+	translate(600, 1);
+	pros::delay(100);
 
-	// hang 
-	rotate(-50);
-	translate(2400, -1);
+	// turn & score matchload
+	rotate(45);
+	pnu.set_value(true);
+	translate(1100, 1);
+	pros::delay(250);
+	
+
+	// hang
+	rotate(-25);
+	translate(800, -1); // change to 1200 
+	pros::delay(250);
+	rotate(-20);
+	translate(1800, -1);
 }
 
 void diffColorMid() {
@@ -138,11 +130,15 @@ void diffColorMid() {
 	// AWP 
 	pnu2.set_value(true);
 	// turn & score matchload
-	rotate(45);
-	translate(1600, 1);
+	translate(600, 1);
+	rotate(50);
+	//moveIntake(1000, -1);
+	translate(1200, 1);
+	pros::delay(100);
 	pnu2.set_value(false);
-	moveIntake(800, -1);
-	translate(1600, -1);
+
+	rotate(-50);
+	translate(1700, -1);
 	pros::delay(250);
 	rotate(50);
 	translate(1800, -1);
@@ -150,22 +146,33 @@ void diffColorMid() {
 
 void skills() {
 	// shoots matchloads
-	moveShooter(44000, 1);
-
+	setShooter(500);
+	for(int i = 0; i < 44; i ++) {
+		while(distanceSensor.get() > 0) {
+			if (distanceSensor.get() < 50) {
+				break;
+			}
+		}
+		i++;
+	}
+	moveShooter(40000, 1);
+	
 	// get neutral triball
-	rotate(90);
+	rotate(45);
 	translate(600, 1);
 	rotate(-45);
+	translate(1200, 1);
 	pnu.set_value(false);
 	pnu2.set_value(true);
-	translate(1200, 1);
 
 	// score neutral triball & matchload
-	translate(1200, 1);
+	translate(2400, 1);
 	rotate(-50);
-	translate(1600, 1);
-	pnu.set_value(true);
-	pnu2.set_value(false);
+	translate(600, 1);
+	rotate(-45);
+	translate(1100, 1);
+	translate(600, -1);
+	rotate(90);
 
 	// score random matchloads 
 	for(int i = 0; i < 2; i++) {
@@ -237,11 +244,25 @@ void setPnu() {
 	pros::delay(10);
 }
 
+void setEndgame() {
+	
+	if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+		pros::lcd::set_text(1, "Endgame activated");
+		pnu.set_value(false);
+		pnu2.set_value(true);
+		//pros::delay(10);
+		//pnu.set_value(false);
+	}
+
+	//shooter = 127;
+	pros::delay(10);
+}
+
 void opcontrol() {
 	bool state = true;
 	while(state) {
 		
-		std::cout << "robot heading: " << imu_sensor.get_heading() << std::endl;
+		std::cout << "distance sensor: " << distanceSensor.get() << std::endl;
 
 		pros::lcd::set_text(0, "Op Control Started");
 		//std::cout << "HELLO" << std::endl;
@@ -263,6 +284,8 @@ void opcontrol() {
 		// control wall
 		setPnu();
 		
+		// control endgame
+		setEndgame();
 
 		pros::delay(10);
 	}

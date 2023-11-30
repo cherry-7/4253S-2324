@@ -1,5 +1,6 @@
 #include "main.h"
 #include "pros/adi.hpp"
+#include "pros/distance.hpp"
 
 // MOTORS
 pros::Motor shooter(1, pros::E_MOTOR_GEARSET_36, false, pros::E_MOTOR_ENCODER_COUNTS);
@@ -11,8 +12,11 @@ pros::Motor driveRightBack(6, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENC
 pros::Motor driveRightBot(7, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_COUNTS);
 pros::Motor driveRightFront(8, pros::E_MOTOR_GEARSET_06, true, pros::E_MOTOR_ENCODER_COUNTS);
 pros::Imu imu_sensor(9);
+pros::Distance distanceSensor(10);
 pros::ADIDigitalOut pnu('A');
 pros::ADIDigitalOut pnu2('B');
+pros::ADIAnalogIn linesensor ('C');
+pros::ADIDigitalOut endgame('D');
 
 // positive voltage = forward/false
 // backwards = true

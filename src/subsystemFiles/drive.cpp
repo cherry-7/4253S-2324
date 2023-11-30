@@ -161,7 +161,8 @@ void translate(int units, int direction) {
     // drive forward until untits are reached
     // fabs covers doubles
     while(avgDriveEncodervalue() < abs(units)) {
-        setDrive(drivePID(units) * direction, drivePID(units) * direction);
+        setDrive(drivePID(units) * direction,
+         drivePID(units) * direction);
         pros::delay(10);
     }
     
