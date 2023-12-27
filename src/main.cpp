@@ -28,6 +28,8 @@ void on_center_button() {
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
+	endgame.set_value(false);
+	// pnu2 left? pnu right
 	pnu.set_value(true);
 	pnu2.set_value(false);
 	pros::lcd::initialize();
@@ -37,6 +39,7 @@ void initialize() {
 	driveLeftFront.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	driveRightBack.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	driveRightFront.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	linesensor.calibrate();
 
 	shooter.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
@@ -81,14 +84,21 @@ void moveShooter(int delay, int direction) {
 
 void sameColorGoal() {
 	// release intake
-	moveShooter(150, -1);
+	setShooter(-500);
 
 	// turn & score matchload
-	translate(600, 1);
-	rotate(-50);
+	translate(750, 1);
+	rotate(-45);
 
+	moveIntake(500, -1);
 	//moveIntake(1000, -1);
 	translate(1200, 1);
+	//rotate(180);
+	translate(600, -1);
+	translate(700, 1);
+	//moveIntake(500, -1);
+	translate(700, -1);
+	setShooter(0);
 	pros::delay(100);
 
 	/* HANG
@@ -101,28 +111,67 @@ void sameColorGoal() {
 	*/
 } 
 
+void moveForward() {
+	moveShooter(150, -1);
+
+	setDrive(88, 88);
+	while(linesensor.get_value() > 0) {
+		if (linesensor.get_value() < 2910) {
+			break;
+		}
+	}
+	setDrive(88, 88);
+}
+
+void moveFor2() {
+	moveShooter(150, -1);
+
+	setDrive(50, 50);
+	pros::delay(800);
+	setDrive(0, 0);
+
+	moveIntake(200, -1);
+
+}
+
 void diffColorGoal() {
 	// release intake
 	moveShooter(150, -1);
 
 	// AWP 
 	pnu.set_value(false);
-	translate(600, 1);
+	translate(650, 1);
 	pros::delay(100);
 
 	// turn & score matchload
 	rotate(45);
 	pnu.set_value(true);
-	translate(1100, 1);
+	translate(1200, 1);
+	translate(600, -1);
+	translate(700, 1);
+	//moveIntake(500, -1);
 	pros::delay(250);
-	
+	translate(700, -1);
+	// middle triball
+	/*
+	rotate(110);
+	translate(1200, 1);
+	translate(600, -1);
+	translate(800, 1);
+	rotate(-90);
+	pros::delay(100);
+	translate(700, 1);
+	moveIntake(800, 1);
+	rotate(-90);
+	translate(1200, 1);*/
 
 	// hang
+	/*
 	rotate(-25);
 	translate(800, -1); // change to 1200 
 	pros::delay(250);
 	rotate(-20);
-	translate(1800, -1);
+	translate(1800, -1); */   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// ///////////////////////////////////////////;
 }
 
 void diffColorMid() {
@@ -137,7 +186,7 @@ void diffColorMid() {
 	pros::delay(100);
 	pnu2.set_value(false);
 
-	rotate(-50);
+	rotate(-50);//
 	translate(1700, -1);
 	pros::delay(250);
 	rotate(50);
@@ -147,18 +196,22 @@ void diffColorMid() {
 void skills() {
 	// shoots matchloads
 	setShooter(500);
+	/*
+	setShooter(500);
 	for(int i = 0; i < 44; i ++) {
 		while(distanceSensor.get() > 0) {
 			if (distanceSensor.get() < 50) {
 				break;
 			}
+			pros::delay(100);
 		}
-		i++;
+		pros::delay(25);
 	}
-	moveShooter(40000, 1);
+	setShooter(0);*/
+	//moveShooter(42000, 1);
 	
-	// get neutral triball
-	rotate(45);
+	/*
+		rotate(45);
 	translate(600, 1);
 	rotate(-45);
 	translate(1200, 1);
@@ -176,10 +229,24 @@ void skills() {
 
 	// score random matchloads 
 	for(int i = 0; i < 2; i++) {
-		translate (1500, -1);
-		rotate(-45);
+		translate (1800, -1);
+		rotate(-90);
 		pnu.set_value(false);
 		pnu2.set_value(true);
+		while (linesensor.get_value() < 2000) {
+			setDrive(88, 88); // 70% of original speed
+			pros::delay(100);
+		}
+		setDrive(0, 0);
+		
+		rotate(90);
+		translate(1800, 1);
+		translate(-600, 1);
+		translate(700, 1);
+
+		
+		// NOT TESTED
+		
 		translate(600, 1);
 		rotate(-45);
 		translate(600, 1);
@@ -189,6 +256,7 @@ void skills() {
 		translate(1600, 1);
 		pnu.set_value(true);
 		pnu2.set_value(false);
+		
 	}
 
 	// last remaining random matchloads
@@ -214,13 +282,62 @@ void skills() {
 	translate(1200, -1);
 	rotate(-45);
 	translate(1200, -1);
+	*/
+	
 }
 
+void sameColor() {
+	moveShooter(150, -1);
+
+	moveIntake(500, -1);
+	rotate(-145);
+
+	// middle
+	translate(1200, 1);
+	setIntake(127);
+	translate(200, 1);
+	translate(1400, -1);
+	setIntake(0);
+
+	rotate(35);
+
+	// descore
+	pnu.set_value(false);
+	pnu2.set_value(true);
+	translate(1100, 1);
+
+	// score 
+	rotate(-40);
+	setIntake(-127);
+	setDrive(127, 127);
+	pros::delay(2000);
+	setDrive(0, 0);
+	setIntake(0);
+	pnu2.set_value(false);
+	pnu.set_value(true);
+
+	// middle triballs
+	translate(900, -1);
+	rotate(-90);
+	setIntake(127);
+	translate(1200, 1);
+	rotate(45);
+	pnu.set_value(false);
+	pnu2.set_value(true);
+	translate(400, 1);
+	rotate(90);
+	setIntake(-127);
+	translate(1200, 1);
+
+}
 
 void autonomous() {
+	sameColor();
+	//diffColorGoal();
 	//sameColorGoal();
-	diffColorGoal();
 	//skills();
+	//moveForward();
+	//moveFor2();
 }
 
 void setPnu() {
@@ -244,12 +361,22 @@ void setPnu() {
 	pros::delay(10);
 }
 
+void setOpening() {
+	
+	if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT)) {
+		pros::lcd::set_text(1, "Shooter activated");
+		moveShooter(150, -1);
+	}
+
+	//shooter = 127;
+	pros::delay(10);
+}
+
 void setEndgame() {
 	
-	if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+	if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
 		pros::lcd::set_text(1, "Endgame activated");
-		pnu.set_value(false);
-		pnu2.set_value(true);
+		endgame.set_value(true);
 		//pros::delay(10);
 		//pnu.set_value(false);
 	}
@@ -262,7 +389,7 @@ void opcontrol() {
 	bool state = true;
 	while(state) {
 		
-		std::cout << "distance sensor: " << distanceSensor.get() << std::endl;
+		std::cout << "line sensor: " << linesensor.get_value() << std::endl;
 
 		pros::lcd::set_text(0, "Op Control Started");
 		//std::cout << "HELLO" << std::endl;
@@ -286,6 +413,9 @@ void opcontrol() {
 		
 		// control endgame
 		setEndgame();
+
+		// open intake
+		setOpening();
 
 		pros::delay(10);
 	}

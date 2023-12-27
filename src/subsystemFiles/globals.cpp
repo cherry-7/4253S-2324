@@ -11,12 +11,12 @@ pros::Motor driveLeftFront(11, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_EN
 pros::Motor driveRightBack(6, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_COUNTS);
 pros::Motor driveRightBot(7, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_COUNTS);
 pros::Motor driveRightFront(8, pros::E_MOTOR_GEARSET_06, true, pros::E_MOTOR_ENCODER_COUNTS);
-pros::Imu imu_sensor(9);
-pros::Distance distanceSensor(10);
+pros::Imu imu_sensor(10);
+pros::Distance distanceSensor(9);
 pros::ADIDigitalOut pnu('A');
 pros::ADIDigitalOut pnu2('B');
-pros::ADIAnalogIn linesensor ('C');
-pros::ADIDigitalOut endgame('D');
+pros::ADIAnalogIn linesensor ('D');
+pros::ADIDigitalOut endgame('C');
 
 // positive voltage = forward/false
 // backwards = true
