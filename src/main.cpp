@@ -295,7 +295,7 @@ void sameColor() {
 	// middle
 	translate(1200, 1);
 	setIntake(127);
-	translate(200, 1);
+	translate(300, 1);
 	translate(1400, -1);
 	setIntake(0);
 
@@ -309,25 +309,26 @@ void sameColor() {
 	// score 
 	rotate(-40);
 	setIntake(-127);
-	setDrive(127, 127);
-	pros::delay(2000);
-	setDrive(0, 0);
+	/*setDrive(127, 127);
+	pros::delay(1500);
+	setDrive(0, 0);*/
+	translate(1200, 1);
 	setIntake(0);
 	pnu2.set_value(false);
 	pnu.set_value(true);
 
 	// middle triballs
 	translate(900, -1);
-	rotate(-90);
+	rotate(-115);
 	setIntake(127);
-	translate(1200, 1);
-	rotate(45);
-	pnu.set_value(false);
+	translate(2500, 1);
+	rotate(20);
+	pnu.set_value(false); 
 	pnu2.set_value(true);
-	translate(400, 1);
-	rotate(90);
-	setIntake(-127);
 	translate(1200, 1);
+	rotate(60);
+	setIntake(-127);
+	translate(1800, 1);
 
 }
 
