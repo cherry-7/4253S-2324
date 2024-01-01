@@ -353,7 +353,7 @@ void diffColor()
 	translate(1000, -1);
 	rotate(135);
 	translate(950, 1);
-	rotate(-10);
+	rotate(-45);
 	translate(1200, 1);
 }
 
