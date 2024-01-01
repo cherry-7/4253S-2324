@@ -346,25 +346,32 @@ void sameColor()
 	translate(1800, 1);
 }
 
-void diffColor()
-{
-	moveIntake(1000, -1);
-	translate(200, 1);
-	translate(1000, -1);
-	rotate(135);
-	translate(950, 1);
-	rotate(-45);
-	translate(1200, 1);
+void diffColor() {
+	moveShooter(150, -1);
+	pnu.set_value(false);
+	pnu2.set_value(true);
+
+	translate(600, 1);
+	rotate(50);
+
+	moveIntake(150, -1);
+	translate(1000, 1);
+	pnu.set_value(true);
+	pnu2.set_value(false);
+	translate(300, -1);
+	rotate(-15);
+	translate(2400, -1);
+	pros::delay(50);
+	rotate(-50);
+	translate(700, -1);
+
 }
 
 void autonomous()
 {
 	//sameColor();
 	diffColor();
-	// diffColorGoal();
-	// sameColorGoal();
 	// skills();
-	// moveForward();
 	// moveFor2();
 }
 
