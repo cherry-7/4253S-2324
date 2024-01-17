@@ -3,6 +3,7 @@
 #include "pros/misc.h"
 #include "pros/rtos.hpp"
 #include "Graphy/Grapher.hpp"
+#include <algorithm>
 #include <string>
 
 /**
@@ -210,94 +211,17 @@ void diffColorMid()
 void skills()
 {
 	// shoots matchloads
-	setShooter(500);
-	/*
-	setShooter(500);
-	for(int i = 0; i < 44; i ++) {
-		while(distanceSensor.get() > 0) {
-			if (distanceSensor.get() < 50) {
-				break;
+	moveShooter(150, -1);
+	//setShooter(500);
+	for(int i = 0; i < 44; i++) {
+		do {
+			while(distanceSensor.get() < 50) {
+				if(distanceSensor.get() > 50) break;	
 			}
-			pros::delay(100);
-		}
-		pros::delay(25);
+		}while (distanceSensor.get() > 0);
+		pros::delay(15);
 	}
-	setShooter(0);*/
-	// moveShooter(42000, 1);
-
-	/*
-		rotate(45);
-	translate(600, 1);
-	rotate(-45);
-	translate(1200, 1);
-	pnu.set_value(false);
-	pnu2.set_value(true);
-
-	// score neutral triball & matchload
-	translate(2400, 1);
-	rotate(-50);
-	translate(600, 1);
-	rotate(-45);
-	translate(1100, 1);
-	translate(600, -1);
-	rotate(90);
-
-	// score random matchloads
-	for(int i = 0; i < 2; i++) {
-		translate (1800, -1);
-		rotate(-90);
-		pnu.set_value(false);
-		pnu2.set_value(true);
-		while (linesensor.get_value() < 2000) {
-			setDrive(88, 88); // 70% of original speed
-			pros::delay(100);
-		}
-		setDrive(0, 0);
-
-		rotate(90);
-		translate(1800, 1);
-		translate(-600, 1);
-		translate(700, 1);
-
-
-		// NOT TESTED
-
-		translate(600, 1);
-		rotate(-45);
-		translate(600, 1);
-		rotate(45);
-		translate(600, 1);
-		rotate(90);
-		translate(1600, 1);
-		pnu.set_value(true);
-		pnu2.set_value(false);
-
-	}
-
-	// last remaining random matchloads
-	rotate(-90);
-	pnu.set_value(false);
-	pnu2.set_value(true);
-	translate(600, 1);
-	rotate(90);
-	translate(1200, 1);
-	rotate(45);
-	translate(900, 1);
-	translate(900, -1);
-	rotate(45);
-	translate(900, 1);
-	translate(900, -1);
-
-	// close wings
-	pnu.set_value(false);
-	pnu2.set_value(true);
-
-	// hang
-	rotate(-45);
-	translate(1200, -1);
-	rotate(-45);
-	translate(1200, -1);
-	*/
+	setShooter(10);
 }
 
 void sameColor()
@@ -369,9 +293,10 @@ void diffColor() {
 
 void autonomous()
 {
+	//rotate(90);
 	//sameColor();
-	diffColor();
-	// skills();
+	//diffColor();
+	 skills();
 	// moveFor2();
 }
 
@@ -432,8 +357,7 @@ void opcontrol()
 	bool state = true;
 	while (state)
 	{
-
-		std::cout << "line sensor: " << linesensor.get_value() << std::endl;
+		std::cout << "distance sensor: " << distanceSensor.get_confidence() << std::endl;
 
 		pros::lcd::set_text(0, "Op Control Started");
 		// std::cout << "HELLO" << std::endl;

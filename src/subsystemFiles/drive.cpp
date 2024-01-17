@@ -52,6 +52,8 @@ void arcadeDrive(int drive, int rotate) {
    int total = drive + rotate;
    int difference = drive - rotate;
 
+    // left side
+
    if (drive >= 0) {
         if (rotate >= 0) {
             setDrive(maximum, difference);
@@ -66,7 +68,7 @@ void arcadeDrive(int drive, int rotate) {
         else {
             driveLeftBot = -maximum;
             driveLeftFront = -maximum;
-            driveLeftBack = maximum;
+            driveLeftBack = -maximum;
 
             driveRightBot = -difference;
             driveRightBack = -difference;
@@ -107,7 +109,7 @@ void setDriveMotors() {
     }
     
     if(arcDrive == true) 
-        arcadeDrive(rightJoystick, leftJoystick * 0.75);
+        arcadeDrive(rightJoystick, 0.8 * leftJoystick);
     else 
         setDrive(leftJoystick, rightJoystick);
     pros::lcd::set_text(3, "Left: " + std::to_string(leftJoystick) + "Right: " + std::to_string(rightJoystick));
